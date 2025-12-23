@@ -1,0 +1,11 @@
+Extract on New Machine
+For TAR.GZ:
+
+bash
+tar -xzf ytdlp-deployment.tar.gz
+For ZIP:
+
+bash
+unzip ytdlp-deployment.zip
+Both archives are ready to go! Choose whichever format works best for your target machine. 🎉
+

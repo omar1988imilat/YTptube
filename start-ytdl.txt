@@ -1,0 +1,17 @@
+Setup on New Machine
+Extract the files
+Install Python 3.13+, Node.js, and ffmpeg
+Run these commands:
+
+cd ytdlp
+python3 -m venv venv
+source venv/bin/activate
+pip install uv
+uv pip install -e .
+cd ui && npm install && npm run build && cd ..
+./start.sh
+
+
+The complete guide is now saved in /home/oga/ytdlp/DEPLOYMENT_GUIDE.md with detailed instructions, troubleshooting tips, and alternative deployment options.
+
+Would you like me to create the archive for you now, or would you prefer to use one of the other methods?

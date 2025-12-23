@@ -782,6 +782,38 @@ class DownloadQueue(metaclass=Singleton):
                 LOG.error(f"Unable to extract info for '{item.url}'. Logs: {logs}")
                 return {"status": "error", "msg": "Unable to extract info." + "\n".join(logs)}
 
+            # If this is a single video (not a playlist) and has no formats, re-extract with full details
+            is_playlist = entry.get("_type", "video").startswith("playlist")
+            has_formats = len(entry.get("formats", [])) > 0 or entry.get("url")
+            
+            if not is_playlist and not has_formats:
+                LOG.info(f"Re-extracting '{item.url}' with full format details...")
+                logs.clear()
+                
+                yt_conf_full = {
+                    **yt_conf,
+                    "extract_flat": False,  # Get full format details
+                }
+                
+                entry = await asyncio.wait_for(
+                    fut=asyncio.get_running_loop().run_in_executor(
+                        None,
+                        functools.partial(
+                            extract_info,
+                            config=yt_conf_full,
+                            url=item.url,
+                            debug=bool(self.config.ytdlp_debug),
+                            no_archive=False,
+                            follow_redirect=True,
+                        ),
+                    ),
+                    timeout=self.config.extract_info_timeout,
+                )
+                
+                if not entry:
+                    LOG.error(f"Unable to re-extract info for '{item.url}'. Logs: {logs}")
+                    return {"status": "error", "msg": "Unable to extract full video info." + "\n".join(logs)}
+
             if not item.requeued and (condition := Conditions.get_instance().match(info=entry)):
                 already.pop()
 
