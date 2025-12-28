@@ -4,10 +4,11 @@ Install Python 3.13+, Node.js, and ffmpeg
 Run these commands:
 
 cd ytdlp
-python3 -m venv venv
+python3.13 -m venv venv
 source venv/bin/activate
-pip install uv
-uv pip install -e .
+python -V   # verify it's 3.13+
+pip install --upgrade pip
+pip install -e .
 cd ui && npm install && npm run build && cd ..
 ./start.sh
 
